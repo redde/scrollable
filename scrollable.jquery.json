@@ -1,0 +1,26 @@
+{
+  "name": "scrollable",
+  "title": "Scrollable",
+  "description": "Scrollable jQuery plugin",
+  "version": "0.1.0",
+  "homepage": "https://github.com/konstantingorozankin/scrollable",
+  "author": {
+    "name": "Konstantin Gorozhankin",
+    "email": "mbox@life-company.ru"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/konstantingorozankin/scrollable.git"
+  },
+  "bugs": "https://github.com/konstantingorozankin/scrollable/issues",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/konstantingorozankin/scrollable/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "keywords": []
+}

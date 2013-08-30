@@ -1,0 +1,45 @@
+!!!
+%html{"xml:lang" => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
+  %head
+    %meta{:content => "text/html;charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Scrollable
+    %link{:href => "src/style.css", :rel => "stylesheet"}/
+    %script{:src => "libs/jquery/jquery.js"}
+    %script{:src => "src/scrollable.js"}
+    %script{:src => "demo.js"} 
+  %body
+    %dl
+      %dt Туду-лист
+      %dd автоматический рассчет ширины
+      %dd концепция обертки
+      %dd touch перелистывание
+    %hr/
+    .scrollable
+      .items
+        .__scrollable
+          .item.item-1
+            %img{:src => "content/001.jpg"}
+          .item.item-2
+            %img{:src => "content/002.jpg"}
+          .item.item-3
+            %img{:src => "content/003.jpg"}
+          .item.item-4
+            %img{:src => "content/004.jpg"}
+          .item.item-5
+            %img{:src => "content/005.jpg"}
+          .item.item-6
+            %img{:src => "content/006.jpg"}
+          .item.item-7
+            %img{:src => "content/007.jpg"}
+          .item.item-8
+            %img{:src => "content/008.jpg"}
+          .item.item-9
+            %img{:src => "content/009.jpg"}
+          .item.item-10
+            %img{:src => "content/010.jpg"}
+    %br/
+    %br/
+    %a{:href => "#", :onclick => "update(1); return false;"} update(1)
+    %a{:href => "#", :onclick => "update(2); return false;"} update(2)
+    %a{:href => "#", :onclick => "update(3); return false;"} update(3)
+    %a{:href => "#", :onclick => "update(4); return false;"} update(4)
