@@ -14,15 +14,16 @@
         });
       }
     });
-    Scrollable = function(el, opts, funcs) {
-      this.me = el;
-      $.extend(this, funcs);
-      this.init(opts);
-      return $.data(el, "scrollable", this);
-    };
-    return Scrollable.prototype = {
-      init: function(config) {
-        var itemRoot, opts, root, self;
+    return Scrollable = (function() {
+      function Scrollable(el, opts, funcs) {
+        this.me = el;
+        $.extend(this, funcs);
+        this.init(opts);
+        $.data(el, "scrollable", this);
+      }
+
+      Scrollable.prototype.init = function(config) {
+        var itemRoot, naviType, opts, root, self;
         self = this;
         opts = {
           size: 1,
@@ -56,36 +57,32 @@
           self.click($(this).index());
           return e.preventDefault();
         });
+        naviType = opts.naviPage ? 'Page' : '';
         $("<a href='#' />").addClass(opts.prev).appendTo(this.root).click(function(e) {
-          if (opts.naviPage) {
-            self.prevPage();
-          } else {
-            self.prev();
-          }
+          self["prev" + naviType]();
           return e.preventDefault();
         });
         return $("<a href='#' />").addClass(opts.next).appendTo(this.root).click(function(e) {
-          if (opts.naviPage) {
-            self.nextPage();
-          } else {
-            self.next();
-          }
+          self["next" + naviType]();
           return e.preventDefault();
         });
-      },
-      update: function(config) {
+      };
+
+      Scrollable.prototype.update = function(config) {
         $.extend(this.opts, config);
         this.itemRoot.css({
           width: this.opts.size * this.opts.width + (this.opts.size - 1) * this.opts.item_margin
         });
         return this.seekTo(this.index, this.opts.speed);
-      },
-      click: function(index) {
+      };
+
+      Scrollable.prototype.click = function(index) {
         var klass;
         klass = this.opts.activeClass;
         return this.wrap.children().removeClass(klass).eq(index).addClass(klass);
-      },
-      getStatus: function() {
+      };
+
+      Scrollable.prototype.getStatus = function() {
         var len, s;
         len = this.items.size();
         return s = {
@@ -95,8 +92,9 @@
           pages: Math.floor(len / this.opts.size),
           page: Math.floor(this.index / this.opts.size)
         };
-      },
-      _seekToPositive: function(balance, index) {
+      };
+
+      Scrollable.prototype._seekToPositive = function(balance, index) {
         var elems, item, left,
           _this = this;
         elems = this.wrap.children().slice(0, -balance);
@@ -112,8 +110,9 @@
             return _this.wrap.css("left", -item.position().left);
           }
         ];
-      },
-      _seekToNegative: function(index) {
+      };
+
+      Scrollable.prototype._seekToNegative = function(index) {
         var elems, item;
         elems = this.wrap.children().slice(index);
         elems.clone(true, true).prependTo(this.wrap);
@@ -127,8 +126,9 @@
             return elems.remove();
           }
         ];
-      },
-      _seekTo: function(index) {
+      };
+
+      Scrollable.prototype._seekTo = function(index) {
         var balance, item;
         if (index < 0) {
           return this._seekToNegative(index);
@@ -143,8 +143,9 @@
             }
           ];
         }
-      },
-      seekTo: function(index, time) {
+      };
+
+      Scrollable.prototype.seekTo = function(index, time) {
         var arr;
         if (time == null) {
           time = this.opts.speed;
@@ -153,35 +154,47 @@
         arr = this._seekTo(index);
         arr.slice(1, 0, time);
         return this.wrap.animate.apply(this.wrap, arr);
-      },
-      move: function(offset, time) {
+      };
+
+      Scrollable.prototype.move = function(offset, time) {
         return this.seekTo(this.index + offset, time);
-      },
-      next: function(time) {
+      };
+
+      Scrollable.prototype.next = function(time) {
         return this.move(1, time);
-      },
-      prev: function(time) {
+      };
+
+      Scrollable.prototype.prev = function(time) {
         return this.move(-1, time);
-      },
-      movePage: function(offset, time) {
+      };
+
+      Scrollable.prototype.movePage = function(offset, time) {
         return this.move(this.opts.size * offset, time);
-      },
-      setPage: function(index, time) {
+      };
+
+      Scrollable.prototype.setPage = function(index, time) {
         return this.seekTo(this.opts.size * index, time);
-      },
-      prevPage: function(time) {
+      };
+
+      Scrollable.prototype.prevPage = function(time) {
         return this.seekTo(this.index - this.opts.size, time);
-      },
-      nextPage: function(time) {
+      };
+
+      Scrollable.prototype.nextPage = function(time) {
         return this.seekTo(this.index + this.opts.size, time);
-      },
-      begin: function(time) {
+      };
+
+      Scrollable.prototype.begin = function(time) {
         return this.seekTo(0, time);
-      },
-      end: function(time) {
+      };
+
+      Scrollable.prototype.end = function(time) {
         return this.seekTo(this.items.size() - this.opts.size, time);
-      }
-    };
+      };
+
+      return Scrollable;
+
+    })();
   })(jQuery);
 
 }).call(this);

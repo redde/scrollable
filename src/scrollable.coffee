@@ -10,21 +10,16 @@
         el[arg1].apply el, [arg2, arg3]
       else
         sl = new Scrollable(this, arg1, arg2)
-
-
-  
-  # constructor
-  Scrollable = (el, opts, funcs) ->
-    
-    # store this instance
-    @me = el
-    $.extend this, funcs
-    @init opts
-    $.data el, "scrollable", this
-
   
   # methods
-  Scrollable:: =
+  class Scrollable
+    constructor: (el, opts, funcs) ->
+      # store this instance
+      @me = el
+      $.extend this, funcs
+      @init opts
+      $.data el, "scrollable", this
+
     init: (config) ->
 
       # current instance
@@ -71,12 +66,13 @@
 
 
       # @activeIndex = 0
+      naviType = if opts.naviPage then 'Page' else ''
       $("<a href='#' />").addClass(opts.prev).appendTo(@root).click (e) ->
-        (if opts.naviPage then self.prevPage() else self.prev())
+        self["prev#{naviType}"]()
         e.preventDefault()
 
       $("<a href='#' />").addClass(opts.next).appendTo(@root).click (e) ->
-        (if opts.naviPage then self.nextPage() else self.next())
+        self["next#{naviType}"]()
         e.preventDefault()
 
 
