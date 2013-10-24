@@ -151,6 +151,12 @@
           time = this.opts.speed;
         }
         this.wrap.stop(true, true);
+        if (!this.opts.rolling) {
+          if (index < 0) {
+            index = 0;
+          }
+          index = Math.min(index, this.items.length - this.opts.size);
+        }
         arr = this._seekTo(index);
         arr.slice(1, 0, time);
         return this.wrap.animate.apply(this.wrap, arr);

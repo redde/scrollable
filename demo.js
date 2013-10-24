@@ -1,4 +1,4 @@
-var sc;
+var sc1, sc2;
 $(function(){
   var funcs = {
     update: function(config) {
@@ -9,15 +9,24 @@ $(function(){
       this.seekTo(this.index, this.opts.speed);
     }
   }
-  sc = $("div.scrollable").scrollable({
+  sc1 = $("div.scrollable").eq(0).scrollable({
     size:4,
     width:200,
     naviPage: true,
     item_margin: 20,
     speed: 600
   }, funcs);
+  sc2 = $("div.scrollable").eq(1).scrollable({
+    size:4,
+    width:200,
+    naviPage: true,
+    item_margin: 20,
+    speed: 600,
+    rolling: false
+  }, funcs);
 });
 
 function update(index) {
-  sc.scrollable('update', {size:index});
+  sc1.scrollable('update', {size:index});
+  sc2.scrollable('update', {size:index});
 };

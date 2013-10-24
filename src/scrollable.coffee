@@ -161,6 +161,11 @@
     seekTo: (index, time) ->
       time ?= @opts.speed
       @wrap.stop true, true
+
+      unless @opts.rolling
+        index = 0 if index < 0         
+        index = Math.min(index, @items.length - @opts.size)
+
       arr = @_seekTo(index)
       arr.slice(1, 0, time)
       @wrap.animate.apply @wrap, arr
