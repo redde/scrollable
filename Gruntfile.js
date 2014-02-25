@@ -61,6 +61,13 @@ module.exports = function(grunt) {
         }
       }
     },
+    sass: {
+      dev: {
+        files: {
+          'src/<%= pkg.name %>.css': 'src/scrollable.sass'
+        }
+      }
+    },
     haml: {
       dist: {
         files: {
@@ -94,6 +101,10 @@ module.exports = function(grunt) {
         files: 'src/scrollable.coffee',
         tasks: ['coffee', 'jasmine']
       },
+      sass: {
+        files: ['src/scrollable.sass'],
+        tasks: ['sass']
+      },
       haml: {
         files: ['index.haml'],
         tasks: ['haml']
@@ -114,6 +125,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jasmine');
 
   // Default task.
-  grunt.registerTask('default', ['haml', 'coffee', 'clean', 'concat', 'uglify']);
+  grunt.registerTask('default', ['haml', 'sass', 'coffee', 'clean', 'concat', 'uglify']);
 
 };

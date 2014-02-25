@@ -1,0 +1,111 @@
+body
+  margin: 200px
+  background: #fcc
+
+ul
+  margin: 0
+  padding: 0
+  list-style: none
+
+.scrollable
+  height: 200px
+  *
+    height: 200px
+  position: relative
+  width: 860px
+
+.items
+  width: 860px
+  overflow: hidden
+  position: relative
+
+.__scrollable
+  position: relative
+  overflow: hidden
+  visibility: visible
+  width: 20000em
+
+.item
+  float: left
+  margin-right: 20px
+  width: 200px
+  position: relative
+  overflow: hidden
+  img
+    position: absolute
+    top: -200px
+    right: -200px
+    bottom: -200px
+    left: -200px
+    margin: auto
+  &._active
+    &:after
+      content: ''
+      box-shadow: inset 0 0 10px #000
+      position: absolute
+      top: 0
+      right: 0
+      bottom: 0
+      left: 0
+
+a
+  &.prev, &.next
+    opacity: 0.5
+    position: absolute
+    top: 50%
+    margin-top: -50px
+  &.prev, &.next
+    display: block
+    width: 0
+    height: 0
+    border-top: 50px solid transparent
+    border-bottom: 50px solid transparent
+  &.prev
+    &:before, &:after
+      display: block
+      width: 0
+      height: 0
+      border-top: 50px solid transparent
+      border-bottom: 50px solid transparent
+  &.next
+    &:before, &:after
+      display: block
+      width: 0
+      height: 0
+      border-top: 50px solid transparent
+      border-bottom: 50px solid transparent
+  &.prev
+    border-right: 15px solid #fff
+    left: -50px
+  &.next
+    border-left: 15px solid #fff
+    right: -50px
+  &.prev
+    &:before, &:after
+      width: 0
+      height: 0
+      content: ""
+      display: block
+      position: absolute
+  &.next
+    &:before, &:after
+      width: 0
+      height: 0
+      content: ""
+      display: block
+      position: absolute
+  &.prev
+    &:before, &:after
+      left: 15px
+      border-left: 15px solid #fff
+  &.next
+    &:before, &:after
+      right: 15px
+      border-right: 15px solid #fff
+  &.prev, &.next
+    &:before
+      border-bottom: none
+      top: 0
+    &:after
+      border-top: none
+      top: -50px

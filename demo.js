@@ -7,6 +7,9 @@ $(function(){
         width: this.opts.size * this.opts.width + (this.opts.size - 1) * this.opts.item_margin
       });
       this.seekTo(this.index, this.opts.speed);
+    },
+    click: function(index){
+      console.log(this.items.eq(index))
     }
   }
   sc1 = $("div.scrollable").eq(0).scrollable({

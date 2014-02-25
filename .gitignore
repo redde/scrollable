@@ -3,3 +3,4 @@
 *.DS_Store
 /_SpecRunner.html
 *.grunt/
+*.sass-cache

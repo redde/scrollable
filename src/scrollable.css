@@ -1,0 +1,102 @@
+body {
+  margin: 200px;
+  background: #ffcccc; }
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+
+.scrollable {
+  height: 200px;
+  position: relative;
+  width: 860px; }
+  .scrollable * {
+    height: 200px; }
+
+.items {
+  width: 860px;
+  overflow: hidden;
+  position: relative; }
+
+.__scrollable {
+  position: relative;
+  overflow: hidden;
+  visibility: visible;
+  width: 20000em; }
+
+.item {
+  float: left;
+  margin-right: 20px;
+  width: 200px;
+  position: relative;
+  overflow: hidden; }
+  .item img {
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    bottom: -200px;
+    left: -200px;
+    margin: auto; }
+  .item._active:after {
+    content: "";
+    box-shadow: inset 0 0 10px black;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; }
+
+a.prev, a.next {
+  opacity: 0.5;
+  position: absolute;
+  top: 50%;
+  margin-top: -50px; }
+a.prev, a.next {
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 50px solid transparent;
+  border-bottom: 50px solid transparent; }
+a.prev:before, a.prev:after {
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 50px solid transparent;
+  border-bottom: 50px solid transparent; }
+a.next:before, a.next:after {
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 50px solid transparent;
+  border-bottom: 50px solid transparent; }
+a.prev {
+  border-right: 15px solid white;
+  left: -50px; }
+a.next {
+  border-left: 15px solid white;
+  right: -50px; }
+a.prev:before, a.prev:after {
+  width: 0;
+  height: 0;
+  content: "";
+  display: block;
+  position: absolute; }
+a.next:before, a.next:after {
+  width: 0;
+  height: 0;
+  content: "";
+  display: block;
+  position: absolute; }
+a.prev:before, a.prev:after {
+  left: 15px;
+  border-left: 15px solid white; }
+a.next:before, a.next:after {
+  right: 15px;
+  border-right: 15px solid white; }
+a.prev:before, a.next:before {
+  border-bottom: none;
+  top: 0; }
+a.prev:after, a.next:after {
+  border-top: none;
+  top: -50px; }

@@ -16,39 +16,33 @@
     });
     return Scrollable = (function() {
       function Scrollable(el, opts, funcs) {
-        this.me = el;
+        this.root = el;
         $.extend(this, funcs);
         this.init(opts);
         $.data(el, "scrollable", this);
       }
 
       Scrollable.prototype.init = function(config) {
-        var itemRoot, naviType, opts, root, self;
+        var opts, self;
         self = this;
         opts = {
           size: 1,
-          activeClass: "active",
+          activeClass: "_active",
           speed: 600,
           onSeek: null,
           naviPage: false,
           rolling: true,
-          cycleRolling: false,
           width: 200,
           item_margin: 0,
-          items: ".items",
-          prev: "prev",
-          next: "next",
-          navi: ".navi",
-          naviItem: "span"
+          items: ".__scrollable",
+          item: ".item",
+          prevClass: "prev",
+          nextClass: "next",
+          navi: ".navi"
         };
         this.opts = $.extend(opts, config);
-        root = this.root = $(self.me);
-        itemRoot = this.itemRoot = $(opts.items, root);
-        if (!itemRoot.length) {
-          itemRoot = root;
-        }
-        this.wrap = itemRoot.children(":first");
-        this.items = this.wrap.children();
+        this.wrap = $(this.root).find(this.opts.items);
+        this.items = this.wrap.find(this.opts.item);
         this.index = 0;
         if (this.getStatus().length <= this.opts.size) {
           return false;
@@ -57,15 +51,49 @@
           self.click($(this).index());
           return e.preventDefault();
         });
-        naviType = opts.naviPage ? 'Page' : '';
-        $("<a href='#' />").addClass(opts.prev).appendTo(this.root).click(function(e) {
-          self["prev" + naviType]();
-          return e.preventDefault();
+        return this.initNavi();
+      };
+
+      Scrollable.prototype.initNavi = function() {
+        var len, naviType, s, that,
+          _this = this;
+        that = this;
+        this.navi = {};
+        naviType = this.opts.naviPage ? 'Page' : '';
+        this.navi.prev = $("<a href='javascript:void(0);' />").addClass(this.opts.prevClass).appendTo(this.root).click(function() {
+          return _this["prev" + naviType]();
         });
-        return $("<a href='#' />").addClass(opts.next).appendTo(this.root).click(function(e) {
-          self["next" + naviType]();
-          return e.preventDefault();
+        this.navi.next = $("<a href='javascript:void(0);' />").addClass(this.opts.nextClass).appendTo(this.root).click(function() {
+          return _this["next" + naviType]();
         });
+        s = this.getStatus();
+        len = Math.ceil(s.length / this.opts.size);
+        if (len) {
+          this.navi.box = $(this.opts.navi, this.root).html($.map(new Array(len), function(n) {
+            return "<a class='navi__link' href='javascript:void(0);'>" + n + "</a>";
+          }).join('')).on('click', 'a', function() {
+            return that.setPage($(this).index());
+          });
+          this.navi.items = this.navi.box.find('a');
+          return this.updateNavi();
+        }
+      };
+
+      Scrollable.prototype.updateNavi = function() {
+        var s;
+        if (this.opts.rolling) {
+          return false;
+        }
+        s = this.getStatus();
+        this.navi.items.removeClass('is-active').eq(s.page).addClass('is-active');
+        this.navi.next.css('visibility', 'visible');
+        this.navi.prev.css('visibility', 'visible');
+        if (s.page === 0) {
+          this.navi.prev.css('visibility', 'hidden');
+        }
+        if (s.page === s.pages) {
+          return this.navi.next.css('visibility', 'hidden');
+        }
       };
 
       Scrollable.prototype.update = function(config) {
@@ -90,7 +118,7 @@
           index: this.index,
           size: this.opts.size,
           pages: Math.floor(len / this.opts.size),
-          page: Math.floor(this.index / this.opts.size)
+          page: Math.ceil(this.index / this.opts.size)
         };
       };
 
@@ -159,7 +187,8 @@
         }
         arr = this._seekTo(index);
         arr.slice(1, 0, time);
-        return this.wrap.animate.apply(this.wrap, arr);
+        this.wrap.animate.apply(this.wrap, arr);
+        return this.updateNavi();
       };
 
       Scrollable.prototype.move = function(offset, time) {

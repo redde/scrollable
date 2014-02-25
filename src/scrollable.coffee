@@ -1,4 +1,4 @@
-(($) ->
+do ($ = jQuery) ->
   
   # plugin initialization
   $.fn.extend scrollable: (arg1, arg2, arg3) ->
@@ -11,52 +11,45 @@
       else
         sl = new Scrollable(this, arg1, arg2)
   
-  # methods
   class Scrollable
     constructor: (el, opts, funcs) ->
       # store this instance
-      @me = el
+      @root = el
       $.extend this, funcs
       @init opts
       $.data el, "scrollable", this
 
     init: (config) ->
-
       # current instance
       self = this
       opts =
         size: 1
-        activeClass: "active"
+        activeClass: "_active"
         speed: 600
         onSeek: null # callback функция, для seekTo, полезность сомнительная,
         # потому как элемент на который был произведен клик остается недоступен внутри функции,
         # возможно, есть смысл использовать при установке активных/неактивных стрелочек
         naviPage: false # навигация по страницам, т.е. перелистывание будет происходить блоками
         rolling: true
-        cycleRolling: false
         width: 200
         item_margin: 0
         
         # jquery selectors
-        items: ".items"
-        prev: "prev"
-        next: "next"
+        items: ".__scrollable"
+        item: ".item"
+        prevClass: "prev"
+        nextClass: "next"
         navi: ".navi"
-        naviItem: "span"
+
 
       @opts = $.extend(opts, config)
+
+      @wrap = $(@root).find(@opts.items)
       
-      # root / itemRoot
-      root = @root = $(self.me)
-      itemRoot = @itemRoot = $(opts.items, root)
-      itemRoot = root  unless itemRoot.length
-      
-      # wrap itemRoot.children() inside container
-      # itemRoot.css({position:'relative', overflow:'hidden', visibility:'visible', width: 640});
-      # itemRoot.children().wrapAll('<div class="__scrollable" style="position:absolute;"/>');
-      @wrap = itemRoot.children(":first")
-      @items = @wrap.children()
+      @items = @wrap.find(@opts.item)
+
       @index = 0
+
       return false  if @getStatus().length <= @opts.size
       
       # item.click()
@@ -64,21 +57,43 @@
         self.click $(@).index()
         e.preventDefault()
 
-
       # @activeIndex = 0
-      naviType = if opts.naviPage then 'Page' else ''
-      $("<a href='#' />").addClass(opts.prev).appendTo(@root).click (e) ->
-        self["prev#{naviType}"]()
-        e.preventDefault()
 
-      $("<a href='#' />").addClass(opts.next).appendTo(@root).click (e) ->
-        self["next#{naviType}"]()
-        e.preventDefault()
+      @initNavi()
 
+    initNavi: ->
+      that = @
+      @navi = {}
+      naviType = if @opts.naviPage then 'Page' else ''
+      @navi.prev = $("<a href='javascript:void(0);' />").addClass(@opts.prevClass).appendTo(@root).click =>
+        @["prev#{naviType}"]()
 
-    
-    # console.log("before getStatus: " + this.opts.speed)
-    # this.getStatus();
+      @navi.next = $("<a href='javascript:void(0);' />").addClass(@opts.nextClass).appendTo(@root).click =>
+        @["next#{naviType}"]()
+
+      s = @getStatus()
+      len = Math.ceil( s.length / @opts.size )
+
+      if len
+        @navi.box = $(@opts.navi, @root).html( $.map new Array(len), (n)->
+          "<a class='navi__link' href='javascript:void(0);'>#{n}</a>"
+        .join(''))
+        .on 'click', 'a', ->
+          that.setPage $(@).index()
+        @navi.items = @navi.box.find('a')
+        @updateNavi()
+
+    updateNavi: ->
+      return false if @opts.rolling
+      s = @getStatus()
+      @navi.items.removeClass('is-active').eq(s.page).addClass 'is-active'
+      @navi.next.css 'visibility', 'visible'
+      @navi.prev.css 'visibility', 'visible'
+      if s.page == 0
+        @navi.prev.css 'visibility', 'hidden'
+      if s.page == s.pages
+        @navi.next.css 'visibility', 'hidden'
+
     update: (config) ->
       $.extend @opts, config
       @itemRoot.css width: @opts.size * @opts.width + (@opts.size - 1) * @opts.item_margin
@@ -89,49 +104,19 @@
 
       @wrap.children().removeClass(klass).eq(index).addClass klass
 
-      # console.log("click: ", index)
       # if not item.hasClass(klass) and (index >= 0 or index < @items.size())
-        # alert index
-
         # @seekTo index - Math.floor(@opts.size / 2)
         # @index = index
 
     getStatus: ->
-      
-      # console.log("native")
       len = @items.size()
       s =
         length: len
         index: @index # определяет положение ленты
         size: @opts.size
         pages: Math.floor(len / @opts.size)
-        page: Math.floor(@index / @opts.size)
+        page: Math.ceil(@index / @opts.size)
     
-    # all other seeking functions depend on this generic seeking function    
-    # seekTo: (index, time) ->
-    #   index = 0  if index < 0
-    #   index = Math.min(index, @items.length - @opts.size)
-    #   item = @items.eq(index)
-    #   return false  if item.size() is 0
-    #   @index = index
-    #   left = @wrap.offset().left - item.offset().left
-    #   @wrap.stop(true, true).animate
-    #     left: left
-    #   , time or @opts.speed
-      
-    #   # custom onSeek callback
-    #   @opts.onSeek.call @getStatus()  if $.isFunction(@opts.onSeek)
-      
-    #   # navi status update
-    #   # var navi = $(this.opts.navi, this.root);
-      
-    #   # if (navi.length) {
-    #   #   var klass = this.opts.activeClass;
-    #   #   var page = Math.round(index / this.opts.size);
-    #   #   navi.children().removeClass(klass).eq(page).addClass(klass);
-    #   # }
-    #   true
-
     _seekToPositive: (balance, index)->
       elems = @wrap.children().slice(0, -balance)
       elems.clone(true, true).appendTo @wrap
@@ -169,6 +154,7 @@
       arr = @_seekTo(index)
       arr.slice(1, 0, time)
       @wrap.animate.apply @wrap, arr
+      @updateNavi()
 
     move: (offset, time) ->
       @seekTo @index + offset, time
@@ -196,4 +182,3 @@
 
     end: (time) ->
       @seekTo @items.size() - @opts.size, time
-) jQuery
