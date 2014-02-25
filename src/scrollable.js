@@ -48,7 +48,7 @@
           self.click($(this).index());
           return e.preventDefault();
         });
-        if (this.getStatus().length <= this.opts.size) {
+        if (this.getStatus().length > this.opts.size) {
           return this.initNavi();
         }
       };

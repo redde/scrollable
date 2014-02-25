@@ -55,7 +55,7 @@ do ($ = jQuery) ->
         self.click $(@).index()
         e.preventDefault()
 
-      if @getStatus().length <= @opts.size
+      if @getStatus().length > @opts.size
         @initNavi()
 
     initNavi: ->
