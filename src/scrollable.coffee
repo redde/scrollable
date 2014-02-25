@@ -50,16 +50,13 @@ do ($ = jQuery) ->
 
       @index = 0
 
-      return false  if @getStatus().length <= @opts.size
-      
       # item.click()
       @items.bind "click.scrollable", (e) ->
         self.click $(@).index()
         e.preventDefault()
 
-      # @activeIndex = 0
-
-      @initNavi()
+      if @getStatus().length <= @opts.size
+        @initNavi()
 
     initNavi: ->
       that = @

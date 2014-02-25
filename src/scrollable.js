@@ -44,14 +44,13 @@
         this.wrap = $(this.root).find(this.opts.items);
         this.items = this.wrap.find(this.opts.item);
         this.index = 0;
-        if (this.getStatus().length <= this.opts.size) {
-          return false;
-        }
         this.items.bind("click.scrollable", function(e) {
           self.click($(this).index());
           return e.preventDefault();
         });
-        return this.initNavi();
+        if (this.getStatus().length <= this.opts.size) {
+          return this.initNavi();
+        }
       };
 
       Scrollable.prototype.initNavi = function() {
