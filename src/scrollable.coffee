@@ -86,9 +86,9 @@ do ($ = jQuery) ->
       @navi.items.removeClass('is-active').eq(s.page).addClass 'is-active'
       @navi.next.css 'visibility', 'visible'
       @navi.prev.css 'visibility', 'visible'
-      if s.page == 0
+      if s.index == 0
         @navi.prev.css 'visibility', 'hidden'
-      if s.page == s.pages
+      if s.index >= s.length - s.size
         @navi.next.css 'visibility', 'hidden'
 
     update: (config) ->

@@ -87,10 +87,10 @@
         this.navi.items.removeClass('is-active').eq(s.page).addClass('is-active');
         this.navi.next.css('visibility', 'visible');
         this.navi.prev.css('visibility', 'visible');
-        if (s.page === 0) {
+        if (s.index === 0) {
           this.navi.prev.css('visibility', 'hidden');
         }
-        if (s.page === s.pages) {
+        if (s.index >= s.length - s.size) {
           return this.navi.next.css('visibility', 'hidden');
         }
       };
